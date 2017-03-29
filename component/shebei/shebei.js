@@ -4,19 +4,73 @@ import './shebei.css';
 const { Column, ColumnGroup } = Table;
 
 class Shebei extends React.Component {
+
     constructor(props){
         super(props);
         
         this.state = {
             modal1Visible: false,
             modal2Visible: false,
+            content: null,
+            list: null,
+            columns: [
+                {
+                    title: '设备名',
+                    dataIndex: 'name',
+                    key: 'name',
+                }, 
+                {
+                    title: '公司',
+                    dataIndex: 'age',
+                    key: 'age',
+                }, 
+                {
+                    title: '地址',
+                    dataIndex: 'address',
+                    key: 'address',
+                }, 
+                {
+                    title: '详情',
+                    key: 'action',
+                    render: (text, record) => (
+                        <span>
+                        <Button onClick={info}>详情</Button>
+                        </span>
+                    ),
+                }  
+            ],
+            data: [
+                {
+                    key: '1',
+                    firstName: 'John Brown',
+                    age: 32,
+                    address: 'New York No. 1 Lake Park',
+                    date:'2017-06-01',
+                    offLine: true
+                }, {
+                    key: '2',
+                    firstName: 'Jim Green',
+                    age: 42,
+                    address: 'London No. 1 Lake Park',
+                    date:'2017-06-02',
+                    offLine: true
+                }, {
+                    key: '3',
+                    firstName: 'Joe Black',
+                    age: 32,
+                    address: 'Sidney No. 1 Lake Park',
+                    date:'2017-07-01',
+                    offLine: true
+            }]
         }
         this.handleFun = this.handleFun.bind(this);
     }
 
     handleFun(record, event){
-        console.log(record, event);
-
+        // console.log(record, event);
+        console.log(record);
+        const index = parseInt(record.key, 10) - 1;
+        this.state.content = this.state.list[index];
     }
     setModal1Visible(modal1Visible) {
         this.setState({ modal1Visible });
@@ -26,80 +80,33 @@ class Shebei extends React.Component {
     }
     
     render() {
-        const columns = [
-            {
-                title: '设备名',
-                dataIndex: 'name',
-                key: 'name',
-            }, 
-            {
-                title: '公司',
-                dataIndex: 'age',
-                key: 'age',
-            }, 
-            {
-                title: '地址',
-                dataIndex: 'address',
-                key: 'address',
-            }, 
-            {
-                title: '详情',
-                key: 'action',
-                render: (text, record) => (
-                    <span>
-                    <Button onClick={info}>详情</Button>
-                    </span>
-                ),
-            }  
-         ];
 
-        const data = [
-            {
-                key: '1',
-                firstName: 'John Brown',
-                age: 32,
-                address: 'New York No. 1 Lake Park',
-                date:'2017-06-01',
-                offLine: true
-            }, {
-                key: '2',
-                firstName: 'Jim Green',
-                age: 42,
-                address: 'London No. 1 Lake Park',
-                date:'2017-06-01',
-                offLine: true
-            }, {
-                key: '3',
-                firstName: 'Joe Black',
-                age: 32,
-                address: 'Sidney No. 1 Lake Park',
-                date:'2017-06-01',
-                offLine: true
-        }];
-        let list = data.map((value, index, arr) => {
+        this.state.list = this.state.data.map((value, index, arr) => {
             const objArray = Object.entries(value);
             return (
-                <div>
-                    {objArray.map((value) => {
+                <div key={`dd${index}`}>
+                    {objArray.map((val, i) => {
                         return (
-                            <span>{value[0]}:{value[1]}</span>
+                            <span key={i+1}>{val[0]}:{val[1]}</span>
                         );
                     })}
                 </div>
             );
         });
+
         return (
             <div>
-                <Table dataSource={data}>
+                <Table dataSource={this.state.data}>
                     <Column
                         title="First Name"
                         dataIndex="firstName"
                         key="firstName"
                     />
                     <Column
-                        title="Last Name"
-                        dataIndex="lastName"
-                        key="lastName"
+                        title="Date"
+                        dataIndex="date"
+                        key="date"
+                        sorter={(a, b) => a.date<b.date ? 1:-1}
                     />
                     <Column
                         title="Age"
@@ -119,18 +126,19 @@ class Shebei extends React.Component {
                         )}
                         onCellClick ={this.handleFun}
                     />
-            </Table>
-            <Modal
-                title="Vertically centered modal dialog"
-                wrapClassName="vertical-center-modal"
-                visible={this.state.modal2Visible}
-                onOk={() => this.setModal2Visible(false)}
-                onCancel={() => this.setModal2Visible(false)}
-            >
-                <p>some contents...</p>
-                <p>{list}</p>
-            </Modal>
-        </div>
+                </Table>
+                <Modal
+                    title="Vertically centered modal dialog"
+                    wrapClassName="vertical-center-modal"
+                    visible={this.state.modal2Visible}
+                    onOk={() => this.setModal2Visible(false)}
+                    onCancel={() => this.setModal2Visible(false)}
+                    footer={null}
+                    >
+                    <p>some contents...</p> 
+                    <p>{this.state.content}</p>
+                </Modal>
+            </div>
         );
     }
 }
