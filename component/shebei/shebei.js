@@ -95,7 +95,7 @@ class Shebei extends React.Component {
         });
 
         return (
-            <div>
+            <div>{/**/}
                 <Table dataSource={this.state.data}>
                     <Column
                         title="First Name"

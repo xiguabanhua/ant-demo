@@ -1,3 +1,17 @@
-.index{
-    background: red;
+/*// .index{
+//     background: red;
+// }*/
+
+.app-usb-hotapp-aplity ul{
+    width: 500px;
+    height: 400px;
+    background: #ccc;
 }
+
+.app-usb-hotapp-aplity ul li{
+    width: 100px;
+    height: 100px;
+    background: yellow;
+    margin: 20px;
+}
+
