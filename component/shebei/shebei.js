@@ -1,5 +1,6 @@
 import { Layout, Menu, Icon, Table, Button, Modal} from 'antd';
 import React, {Component} from 'react';
+// import { EditableCell } from './editable_cell.js';
 import './shebei.css';
 const { Column, ColumnGroup } = Table;
 
@@ -46,13 +47,15 @@ class Shebei extends React.Component {
                     age: 32,
                     address: 'New York No. 1 Lake Park',
                     date:'2017-06-01',
-                    offLine: true
+                    remark: '这是备注',
+                    offLine: true,
                 }, {
                     key: '2',
                     firstName: 'Jim Green',
                     age: 42,
                     address: 'London No. 1 Lake Park',
                     date:'2017-06-02',
+                    remark: '这是备注2',
                     offLine: true
                 }, {
                     key: '3',
@@ -60,8 +63,9 @@ class Shebei extends React.Component {
                     age: 32,
                     address: 'Sidney No. 1 Lake Park',
                     date:'2017-07-01',
+                    remark: '这是备注3',
                     offLine: true
-            }]
+            }],
         }
         this.handleFun = this.handleFun.bind(this);
     }
@@ -72,6 +76,27 @@ class Shebei extends React.Component {
         const index = parseInt(record.key, 10) - 1;
         this.state.content = this.state.list[index];
     }
+
+    editOnClickHandler(e) {
+        // console.log(e);
+        e.currentTarget.previousElementSibling.disabled = false;
+        e.currentTarget.previousElementSibling.focus();
+        // debugger;
+    }
+
+    remarkInputOnBlur(e, record) {
+        e.currentTarget.disabled = true;
+        console.log(record); //这是数据对象
+    }
+
+    remarkInputOnChange(e, record, index) {
+        const { data } = this.state;
+        data[index].remark = e.target.value;
+        this.setState({ data });
+        // debugger;
+    }
+    
+
     setModal1Visible(modal1Visible) {
         this.setState({ modal1Visible });
     }
@@ -117,6 +142,22 @@ class Shebei extends React.Component {
                         title="Address"
                         dataIndex="address"
                         key="address"
+                    />
+                    <Column
+                        title="Remark"
+                        dataIndex="remark"
+                        key="remark"
+                        render={(text, record, index) => (
+                            <div>
+                                <input
+                                className="ant-input-none"
+                                disabled="true"
+                                value={text}
+                                onBlur={(e)=>{this.remarkInputOnBlur(e, record)}}
+                                onChange={(e)=>{this.remarkInputOnChange(e, record, index)}}/>
+                                <Button onClick={this.editOnClickHandler}>编辑</Button>
+                            </div>
+                        )}
                     />
                     <Column
                         title="Action"

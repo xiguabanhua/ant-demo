@@ -17,3 +17,9 @@
   top: 0;
   text-align: left;
 }
+
+.ant-input-none {
+  border: 0;
+  background-color: rgba(0,0,0,0);
+  width: 50px;
+}
