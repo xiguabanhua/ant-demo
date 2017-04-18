@@ -1,6 +1,13 @@
 import { Modal, Button, Switch } from 'antd';
 import React, {Component} from 'react';
 import './index.css';
+import ReactDOM from 'react-dom';
+
+//导入echarts
+// var echarts = require('echarts/lib/echarts') //必须
+// require('echarts/lib/chart/pie') //图表类型
+// require('echarts/lib/component/title') //标题插件
+// require('./lib/chart/bar');
 
 class Index extends Component {
 
@@ -8,84 +15,48 @@ class Index extends Component {
         super(props);
         
         this.state = {
-           visible: false,
-           menu: <div>
-                    <span>USB热点</span>
-                    <Switch checkedChildren={'开'} unCheckedChildren={'关'} />
-                    </div>
+            ifShow: false
         }
-        this.divClick = this.divClick.bind(this);
     }
-  showModal = () => {
-    this.setState({
-      visible: true,
-    });
-  }
-  handleOk = (e) => {
-    console.log(e);
-    this.setState({
-      visible: false,
-    });
-  }
-  handleCancel = (e) => {
-    console.log(e);
-    this.setState({
-      visible: false,
-    });
-  }
-  divClick(e){
-    console.log(e.target);
-    let menu = null;
-    switch(e.target.className){
-        case 'usb':
-            menu = <div>
-                        <span>USB热点</span>
-                        <Switch checkedChildren={'开'} unCheckedChildren={'关'} />
-                    </div>
-            break;
-        case 'hotapp':
-            menu = <div>
-                        <span>红外线</span>
-                        <Switch checkedChildren={'开'} unCheckedChildren={'关'} />
-                    </div>
-            break;
-        case 'aplity':
-            menu = <div>
-                        <span>应用管理权限</span>
-                        <Switch checkedChildren={'开'} unCheckedChildren={'关'} />
-                        <span>管理员密码</span>
-                        <Switch checkedChildren={'开'} unCheckedChildren={'关'} />
-                    </div>
-            break;
-        default:
-            break;
-    }
-    this.setState({ menu });
-  }
 
+  showMessage = () => {
+       this.setState({ifShow: !this.state.ifShow}); 
+  } 
+  hidePopup = (e) => {
+    // if(!this.isMounted()){
+    //     return false;
+    // }
+    console.log(e, node, target, isInside);
+    const node = ReactDOM.findDOMNode(this);
+    const target = e.target || e.srcElement;
+    // const isInside = node.contains(target);
+    console.log(e, node, target);
+    if(this.state.ifShow){
+        this.setState({ ifShow: false});
+    }
+  }
+  componentWillMount() {
+      document.removeEventListener('click', this.hidePopup);
+  }
+  componentDidUpdate(prevProps, prevState) {
+      //如果弹框是隐藏
+     if(!this.state.ifShow){
+        document.removeEventListener('click', this.hidePopup);
+      }
+      if(this.state.ifShow){
+        document.addEventListener('click', this.hidePopup);
+      }
+     
+  }
+  
   render() {
+    const notice =  <div className='notice-message'>消息通知弹框</div>
     return (
-      <div>
-        <Button type="primary" onClick={this.showModal}>Open a modal dialog</Button>
-        <Modal title="Basic Modal" visible={this.state.visible}
-          onOk={this.handleOk} onCancel={this.handleCancel}
-        >
-         <div className='app-usb-hotapp-aplity'>
-             <ul>
-                 <li className='usb' key='usb1' onClick = {this.divClick}>
-                     <span>USB热点</span>
-                 </li>
-                 <li className='hotapp' key='hotapp1' onClick = {this.divClick}>
-                     <span>红外线热点</span>
-                 </li>
-                 <li className='aplity' key='aplity1' onClick = {this.divClick}>
-                     <span>应用权限</span>
-                 </li>
-             </ul>
-             {this.state.menu}
-         </div>
-        </Modal>
-      </div>
+        <div>
+             <Button onClick={this.showMessage}>点击</Button>
+            {this.state.ifShow ? notice : null}
+        </div>
+
     );
   }
 }
